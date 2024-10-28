@@ -16,52 +16,49 @@
 
 <body>
     <div class="headerGH"></div>
-    <div class="login-container">
-        <h1>Welcome</h1>
+<div class="login-container">
+    <h1>Welcome</h1>
+    <form onsubmit="event.preventDefault(); submitForm();">
         <div class="login-form">
             <input type="text" id="email" placeholder="Email" autocomplete="off" required>
             <input type="password" id="password" placeholder="Password" autocomplete="off" required>
-            <button onclick="submitForm()">Login</button>
+            <button type="submit">Login</button>
         </div>
-        <div class="social-buttons">
-            <button class="facebook"><i class="fab fa-facebook-f"></i> Login with Facebook</button>
-            <button class="google"><i class="fab fa-google"></i> Login with Google</button>
-        </div>
+    </form>
+    <div class="social-buttons">
+        <button class="facebook"><i class="fab fa-facebook-f"></i> Login with Facebook</button>
+        <button class="google"><i class="fab fa-google"></i> Login with Google</button>
     </div>
+</div>
+
 
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBbVCXDY6i_OKIX96DcgF8rIV2OTGsrqlk",
-            authDomain: "social-con-98b07.firebaseapp.com",
-            projectId: "social-con-98b07",
-            storageBucket: "social-con-98b07.appspot.com",
-            messagingSenderId: "842479232809",
-            appId: "1:842479232809:web:e63b9c55120f5798e77938"
-        };
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBdDxwmuS9w0VnfYzLL2ptYBI4GYUWuZqQ",
+  authDomain: "git-hub-test-34e5a.firebaseapp.com",
+  databaseURL: "https://git-hub-test-34e5a-default-rtdb.firebaseio.com",
+  projectId: "git-hub-test-34e5a",
+  storageBucket: "git-hub-test-34e5a.appspot.com",
+  messagingSenderId: "824616741271",
+  appId: "1:824616741271:web:7d068b5de85ba781757cd2",
+  measurementId: "G-TV39YCR646"
+};
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
-        // Google Login
-        document.querySelector('.google').addEventListener('click', () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider).then((result) => {
-                console.log(result.user);
-            }).catch((error) => {
-                console.error("Error with Google login: ", error);
-            });
-        });
+// Google Login
+document.querySelector('.google').addEventListener('click', () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithRedirect(provider);
+});
 
-        // Facebook Login
-        document.querySelector('.facebook').addEventListener('click', () => {
-            const provider = new firebase.auth.FacebookAuthProvider();
-            firebase.auth().signInWithPopup(provider).then((result) => {
-                console.log(result.user);
-            }).catch((error) => {
-                console.error("Error with Facebook login: ", error);
-            });
-        });
+// Facebook Login
+document.querySelector('.facebook').addEventListener('click', () => {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    firebase.auth().signInWithRedirect(provider);
+});
 
         // Email/Password Login
         function submitForm() {
