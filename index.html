@@ -16,21 +16,40 @@
 
 <body>
     <div class="headerGH"></div>
-<div class="login-container">
-    <h1>Welcome</h1>
-    <form onsubmit="event.preventDefault(); submitForm();">
+	 <div class="login-container">
+	<img id="profile-pic" src="img/hh.gif" alt="Profile Picture">
+        <h1>Welcome</h1>
+		<form onsubmit="event.preventDefault(); submitForm();">
+        <h3>Social Media Login</h3>
         <div class="login-form">
             <input type="text" id="email" placeholder="Email" autocomplete="off" required>
-            <input type="password" id="password" placeholder="Password" autocomplete="off" required>
-            <button type="submit">Login</button>
+        <input type="password" id="password" placeholder="Password" autocomplete="off" required>
+        <button type="submit">Login</button>
+        <button type="button" onclick="signUp()">Sign Up</button>
         </div>
-    </form>
-    <div class="social-buttons">
-        <button class="facebook"><i class="fab fa-facebook-f"></i> Login with Facebook</button>
-        <button class="google"><i class="fab fa-google"></i> Login with Google</button>
+		 <!-- Message display area -->
+    <div id="message" style="height: 20px; color: green; font-size: 14px; margin-top: 10px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+        <!-- This will show success/error messages -->
     </div>
-</div>
-
+        <div class="social-buttons">
+            <button class="facebook">
+                <i class="fab fa-facebook-f"></i>
+                Login with Facebook
+            </button>
+            <button class="twitter">
+                <i class="fab fa-twitter"></i>
+                Login with Twitter
+            </button>
+            <button class="google">
+                <i class="fab fa-google"></i>
+                Login with Google
+            </button>
+            <button class="instagram">
+                <i class="fab fa-instagram"></i>
+                Login with Instagram
+            </button>
+        </div>
+    </div>
 
     <script>
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -47,6 +66,62 @@ const firebaseConfig = {
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+		//SignUp
+function signUp() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const messageDiv = document.getElementById('message');
+
+    // Basic Validation Rules
+    if (email === '' || password === '') {
+        messageDiv.textContent = 'Error: All fields are required.';
+        messageDiv.style.color = 'red';
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+        messageDiv.textContent = 'Error: Please enter a valid email address.';
+        messageDiv.style.color = 'red';
+        return;
+    }
+
+    if (password.length < 8) {
+        messageDiv.textContent = 'Error: Password must be at least 8 characters long.';
+        messageDiv.style.color = 'red';
+        return;
+    }
+
+    if (!isValidPassword(password)) {
+        messageDiv.textContent = 'Error: Password must include letters, numbers, and special characters.';
+        messageDiv.style.color = 'red';
+        return;
+    }
+
+    // Firebase Registration Call
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            messageDiv.textContent = 'Registered successfully!';
+            messageDiv.style.color = 'green';
+        })
+        .catch((error) => {
+            console.error("Error signing up:", error);
+            messageDiv.textContent = `Error: ${error.message}`;
+            messageDiv.style.color = 'red';
+        });
+}
+
+// Helper function to validate email format
+function isValidEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
+
+// Helper function for password complexity check
+function isValidPassword(password) {
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordPattern.test(password);
+}
+
 
 // Google Login
 document.querySelector('.google').addEventListener('click', () => {
