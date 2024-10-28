@@ -1,0 +1,166 @@
+/*style.css*/
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+	background-color: rgba(152, 204, 152, 0.50);
+}
+.headerGH {
+    background-color: rgba(224, 224, 224, 0.5);
+    position: fixed;
+    border-radius: 20px;
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.1), -8px -8px 15px rgba(255, 255, 255, 0.7);
+    text-align: left;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 111;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    margin-bottom: 20px;
+	top: 0;
+	left: 0;
+}
+h1 {
+    color: green;
+}
+.login-container {
+    background-color: rgba(152, 204, 152, 0.10);
+    border: 2px dotted rgba(100, 150, 50, 0.40);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    color: green;
+    max-width: 400px;
+    width: 100%;
+}
+.login-container h1{
+	font-family: "DynaPuff", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings:70;
+}
+.login-container img{
+	width: 40px;
+    height: 40px;
+    border-radius: 40%;
+    border: 4px solid #fff;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.7);
+    margin-left: 10px;
+    cursor: pointer;
+}
+.login-container h2 {
+    margin-bottom: 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 50px;
+}
+
+.login-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.login-form button {
+    background-color: #4285f4;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.social-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    margin-top: 20px;
+}
+
+.social-buttons button {
+    color: #fff;
+    border: none;
+    padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.social-buttons button.facebook {
+    background-color: #4c70bd;
+}
+
+.social-buttons button.twitter {
+    background-color: #2ca7f3;
+}
+
+.social-buttons button.google {
+    background-color: #f15847;
+}
+
+.social-buttons button.instagram {
+    background-color: #e650a5;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 9px;
+}
+
+.social-icons i {
+    font-size: 30px;
+    color: #4285f4;
+}
+
+i {
+    margin-right: 5px;
+}
+
+.social-icons i.facebook {
+    color: #3b5998;
+}
+
+.social-icons i.twitter {
+    color: #1da1f2;
+}
+
+.social-icons i.google {
+    color: #db4a39;
+}
+
+.social-icons i.instagram {
+    color: #C13584;
+}
+.zoom-box {
+  width: 200px;
+  height: 200px;
+  background-color: #4CAF50;
+  transition: transform 0.2s; /* Animation */
+  margin: 0 auto;
+  text-align: center;
+  line-height: 200px; /* Center text vertically */
+  color: white;
+  font-size: 20px;
+}
+
+.zoom-box:hover {
+  transform: scale(1.5); /* Zoom in 150% */
+}
