@@ -50,102 +50,160 @@
             </button>
         </div>
     </div>
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBdDxwmuS9w0VnfYzLL2ptYBI4GYUWuZqQ",
+        authDomain: "git-hub-test-34e5a.firebaseapp.com",
+        databaseURL: "https://git-hub-test-34e5a-default-rtdb.firebaseio.com",
+        projectId: "git-hub-test-34e5a",
+        storageBucket: "git-hub-test-34e5a.appspot.com",
+        messagingSenderId: "824616741271",
+        appId: "1:824616741271:web:7d068b5de85ba781757cd2",
+        measurementId: "G-TV39YCR646"
+    };
+    firebase.initializeApp(firebaseConfig);
 
-    <script>
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBdDxwmuS9w0VnfYzLL2ptYBI4GYUWuZqQ",
-  authDomain: "git-hub-test-34e5a.firebaseapp.com",
-  databaseURL: "https://git-hub-test-34e5a-default-rtdb.firebaseio.com",
-  projectId: "git-hub-test-34e5a",
-  storageBucket: "git-hub-test-34e5a.appspot.com",
-  messagingSenderId: "824616741271",
-  appId: "1:824616741271:web:7d068b5de85ba781757cd2",
-  measurementId: "G-TV39YCR646"
-};
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-		//SignUp
-function signUp() {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+    // Select elements
+    const loginForm = document.querySelector('.login-container');
+    const userInfo = document.getElementById('user-info');
+    const userName = document.getElementById('user-name');
+    const userPhoto = document.getElementById('user-photo');
+    const logoutBtn = document.getElementById('logout-btn');
     const messageDiv = document.getElementById('message');
 
-    // Basic Validation Rules
-    if (email === '' || password === '') {
-        messageDiv.textContent = 'Error: All fields are required.';
-        messageDiv.style.color = 'red';
-        return;
-    }
-
-    if (!isValidEmail(email)) {
-        messageDiv.textContent = 'Error: Please enter a valid email address.';
-        messageDiv.style.color = 'red';
-        return;
-    }
-
-    if (password.length < 8) {
-        messageDiv.textContent = 'Error: Password must be at least 8 characters long.';
-        messageDiv.style.color = 'red';
-        return;
-    }
-
-    if (!isValidPassword(password)) {
-        messageDiv.textContent = 'Error: Password must include letters, numbers, and special characters.';
-        messageDiv.style.color = 'red';
-        return;
-    }
-
-    // Firebase Registration Call
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            messageDiv.textContent = 'Registered successfully!';
-            messageDiv.style.color = 'green';
+    // Await the redirect result explicitly on page load
+    firebase.auth().getRedirectResult()
+        .then((result) => {
+            if (result.user) {
+                // User signed in through redirect
+                updateUIForLoggedInUser(result.user);
+            }
         })
         .catch((error) => {
-            console.error("Error signing up:", error);
-            messageDiv.textContent = `Error: ${error.message}`;
-            messageDiv.style.color = 'red';
+            console.error("Redirect login error:", error);
         });
-}
 
-// Helper function to validate email format
-function isValidEmail(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-}
-
-// Helper function for password complexity check
-function isValidPassword(password) {
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordPattern.test(password);
-}
-
-
-// Google Login
-document.querySelector('.google').addEventListener('click', () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
-});
-
-// Facebook Login
-document.querySelector('.facebook').addEventListener('click', () => {
-    const provider = new firebase.auth.FacebookAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
-});
-
-        // Email/Password Login
-        function submitForm() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            firebase.auth().signInWithEmailAndPassword(email, password).then((result) => {
-                console.log(result.user);
-            }).catch((error) => {
-                console.error("Error with Email/Password login: ", error);
-            });
+    // Listen for authentication state changes
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            updateUIForLoggedInUser(user);
+        } else {
+            resetUIForLoggedOutUser();
         }
-    </script>
-</body>
+    });
 
+    // Function to handle UI update for logged-in user
+    function updateUIForLoggedInUser(user) {
+        loginForm.style.display = 'none';  // Hide form
+        userName.textContent = user.displayName || 'Guest';
+        userPhoto.src = user.photoURL || 'img/hh.gif';
+        userInfo.style.display = 'flex';
+        logoutBtn.style.display = 'inline-block';
+
+        // Set logo for logout button based on provider
+        if (user.providerData.some((provider) => provider.providerId === 'google.com')) {
+            logoutBtn.innerHTML = '<i class="fab fa-google"></i> Log out';
+        } else if (user.providerData.some((provider) => provider.providerId === 'facebook.com')) {
+            logoutBtn.innerHTML = '<i class="fab fa-facebook-f"></i> Log out';
+        } else {
+            logoutBtn.innerHTML = 'Log out'; // Default appearance for email/password
+        }
+    }
+
+    // Function to reset UI for logged-out user
+    function resetUIForLoggedOutUser() {
+        loginForm.style.display = 'block';  // Show form
+        userInfo.style.display = 'none';    // Hide user info
+        logoutBtn.style.display = 'none';   // Hide logout button
+    }
+
+    // Sign-up function
+    function signUp() {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        // Basic Validation Rules
+        if (email === '' || password === '') {
+            messageDiv.textContent = 'Error: All fields are required.';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            messageDiv.textContent = 'Error: Please enter a valid email address.';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        if (password.length < 8) {
+            messageDiv.textContent = 'Error: Password must be at least 8 characters long.';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        if (!isValidPassword(password)) {
+            messageDiv.textContent = 'Error: Password must include letters, numbers, and special characters.';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        // Firebase Registration Call
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                messageDiv.textContent = 'Registered successfully!';
+                messageDiv.style.color = 'green';
+            })
+            .catch((error) => {
+                console.error("Error signing up:", error);
+                messageDiv.textContent = `Error: ${error.message}`;
+                messageDiv.style.color = 'red';
+            });
+    }
+
+    // Email/Password Login function
+    function submitForm() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .then((result) => {
+                console.log(result.user);
+            })
+            .catch((error) => {
+                console.error("Error with Email/Password login: ", error);
+                messageDiv.textContent = `Error: ${error.message}`;
+                messageDiv.style.color = 'red';
+            });
+    }
+
+    // Logout function
+    function logout() {
+        firebase.auth().signOut()
+            .then(() => console.log("User logged out"))
+            .catch((error) => console.error("Logout error:", error));
+    }
+
+    // Helper function to validate email format
+    function isValidEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    }
+
+    // Helper function for password complexity check
+    function isValidPassword(password) {
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return passwordPattern.test(password);
+    }
+
+    // Google and Facebook Login
+    document.querySelector('.google').addEventListener('click', () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithRedirect(provider);
+    });
+    document.querySelector('.facebook').addEventListener('click', () => {
+        const provider = new firebase.auth.FacebookAuthProvider();
+        firebase.auth().signInWithRedirect(provider);
+    });
+</script>
+</body>
 </html>
