@@ -15,9 +15,13 @@
 </head>
 
 <body>
-    <div class="headerGH">
-	<span id="user-name" style="color: green; font-size: 18px;"></span>
-	</div>
+   <div class="headerGH">
+    <div class="user-info d-flex align-items-center">
+        <img id="user-photo" src="img/hh.gif" alt="User Photo" class="profile-photo me-2">
+        <span id="user-name" style="color: green; font-size: 18px;">Welcome, User</span>
+    </div>
+    <button id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">Log out</button>
+</div>
 	 <div class="login-container">
 	<img id="profile-pic" src="img/hh.gif" alt="Profile Picture">
         <h1>Welcome</h1>
@@ -68,11 +72,9 @@
 
     // Select elements
     const loginForm = document.querySelector('.login-container');
-    const userInfo = document.getElementById('user-info');
-    const userName = document.getElementById('user-name');
-    const userPhoto = document.getElementById('user-photo');
-    const logoutBtn = document.getElementById('logout-btn');
-    const messageDiv = document.getElementById('message');
+        const userName = document.getElementById('user-name');
+        const logoutBtn = document.getElementById('logout-btn');
+        const messageDiv = document.getElementById('message');
 
     // Await the redirect result explicitly on page load
     firebase.auth().getRedirectResult()
@@ -97,12 +99,12 @@
 
     // Function to handle UI update for logged-in user
     function updateUIForLoggedInUser(user) {
-        loginForm.style.display = 'none';  // Hide form
-        userName.textContent = user.displayName || 'Guest';
-        userPhoto.src = user.photoURL || 'img/hh.gif';
-        userInfo.style.display = 'flex';
-        logoutBtn.style.display = 'inline-block';
-
+	loginForm.style.display = 'none';
+	userName.textContent = `Welcome, ${user.displayName || 'User'}`;
+    logoutBtn.style.display = 'inline-block'; // Show logout button
+	// Update profile photo if available
+    const userPhoto = document.getElementById('user-photo');
+    userPhoto.src = user.photoURL || 'img/hh.gif';
         // Set logo for logout button based on provider
         if (user.providerData.some((provider) => provider.providerId === 'google.com')) {
             logoutBtn.innerHTML = '<i class="fab fa-google"></i> Log out';
@@ -111,13 +113,16 @@
         } else {
             logoutBtn.innerHTML = 'Log out'; // Default appearance for email/password
         }
+		//logout-btn
+    logoutBtn.style.display = 'inline-block'; // Show logout button
+
     }
 
     // Function to reset UI for logged-out user
     function resetUIForLoggedOutUser() {
-        loginForm.style.display = 'block';  // Show form
-        userInfo.style.display = 'none';    // Hide user info
-        logoutBtn.style.display = 'none';   // Hide logout button
+ loginForm.style.display = 'block';
+            userName.textContent = '';
+            logoutBtn.style.display = 'none'; // Hide logout button
     }
 
     // Sign-up function
@@ -178,13 +183,6 @@
             });
     }
 
-    // Logout function
-    function logout() {
-        firebase.auth().signOut()
-            .then(() => console.log("User logged out"))
-            .catch((error) => console.error("Logout error:", error));
-    }
-
     // Helper function to validate email format
     function isValidEmail(email) {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -197,15 +195,25 @@
         return passwordPattern.test(password);
     }
 
-    // Google and Facebook Login
-    document.querySelector('.google').addEventListener('click', () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithRedirect(provider);
-    });
-    document.querySelector('.facebook').addEventListener('click', () => {
-        const provider = new firebase.auth.FacebookAuthProvider();
-        firebase.auth().signInWithRedirect(provider);
-    });
+// Logout function
+        function logout() {
+            firebase.auth().signOut()
+                .then(() => console.log("User logged out"))
+                .catch((error) => console.error("Logout error:", error));
+        }
+
+        // Social Login
+        document.querySelector('.google').addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .catch((error) => console.error("Google Login Error:", error));
+        });
+
+        document.querySelector('.facebook').addEventListener('click', () => {
+            const provider = new firebase.auth.FacebookAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .catch((error) => console.error("Facebook Login Error:", error));
+        });
 </script>
 </body>
 </html>
