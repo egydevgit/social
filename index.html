@@ -24,19 +24,20 @@
 <body>
    <div class="headerGH">
     <div class="user-info d-flex align-items-center" id="user-info">
-        <span id="user-name" style="color: green; font-size: 18px;">Welcome, User</span>
+        <span id="user-name1" style="color: green; font-size: 18px; display:none;">Welcome, User</span>
     </div>
-    <button id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">Log out</button>
+    <button type="button" id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">Log out</button>
 </div>
-	 <div class="login-container">
+	 <div class="login-container" id="login-container">
 	<img id="user-photo" src="img/hh.gif" alt="Profile Picture" class="profile-photo me-2">
         <h1>Welcome</h1>
-		<form onsubmit="event.preventDefault(); submitForm();">
+		<span id="user-name" style="color: green; font-size: 18px; display: none;">Welcome, User</span>
         <h3>Social Media Login</h3>
-        <div class="login-form">
-            <input type="text" id="email" placeholder="Email" autocomplete="off" required>
+		<form id="sign-up-form" onsubmit="event.preventDefault(); submitForm();">
+        <div class="login-form" id="signup-div">
+        <input type="text" id="email" placeholder="Email" autocomplete="off" required>
         <input type="password" id="password" placeholder="Password" autocomplete="off" required>
-        <button type="submit">Login</button>
+        <button type="button">Login</button>
         <button type="button" onclick="signUp()">Sign Up</button>
         </div>
 		 <!-- Message display area -->
@@ -78,9 +79,6 @@
    if (!firebase.apps.length) {
        firebase.initializeApp(firebaseConfig);
    }
-
-       // firebase.initializeApp(firebaseConfig);
-
         // Set session persistence to LOCAL
         firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
             .then(() => {
@@ -98,7 +96,8 @@
             });
 
         // Select elements
-        const loginForm = document.querySelector('.login-container');
+		const SocialButtons = document.querySelector('.social-buttons');
+        const loginForm = document.getElementById('signup-div');
         const userInfo = document.getElementById('user-info');
         const userName = document.getElementById('user-name');
         const userPhoto = document.getElementById('user-photo');
@@ -108,11 +107,13 @@
         // Function to handle UI update for logged-in user
         function updateUIForLoggedInUser(user) {
             loginForm.style.display = 'none';  // Hide form
+			userName.style.display = 'block';
             userName.textContent = user.displayName || 'Guest';
             userPhoto.src = user.photoURL || 'img/hh.gif';
-            userInfo.style.display = 'flex';
+            userInfo.style.display = 'none';
             logoutBtn.style.display = 'flex';
             logoutBtn.style.justifyContent = 'center';
+			SocialButtons.style.display= 'none';
 
             // Set logo for logout button based on provider
             if (user.providerData.some(provider => provider.providerId === 'google.com')) {
@@ -126,8 +127,9 @@
 
         // Function to reset UI for logged-out user
         function resetUIForLoggedOutUser() {
-            loginForm.style.display = 'block';  // Show form
+            loginForm.style.display = 'flex';  // Show form
             logoutBtn.style.display = 'none';   // Hide logout button
+			SocialButtons.style.display = 'flex';   // Hide logout button
         }
 
         // Sign-up function
@@ -210,6 +212,8 @@
 // Facebook Login function
         document.getElementById('facebook-login-btn').addEventListener('click', () => {
             const provider = new firebase.auth.FacebookAuthProvider();
+			provider.addScope('email');
+			provider.setCustomParameters({'display': 'popup'});
             firebase.auth().signInWithPopup(provider)
                 .then((result) => {
                     const user = result.user;
